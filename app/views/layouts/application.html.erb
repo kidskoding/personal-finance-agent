@@ -11,20 +11,30 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-50 min-h-screen">
+    <% if user_signed_in? %>
+      <nav class="bg-white border-b border-gray-200 fixed top-0 inset-x-0 z-10">
+        <div class="container mx-auto px-5 flex items-center justify-between h-16">
+          <span class="font-bold text-gray-900">Personal Finance Agent</span>
+          <div class="flex items-center gap-6 text-sm font-medium">
+            <%= link_to "Dashboard", root_path, class: "text-gray-600 hover:text-gray-900 #{"text-indigo-600 font-semibold" if current_page?(root_path)}" %>
+            <%= link_to "Action Plan", action_plan_path, class: "text-gray-600 hover:text-gray-900 #{"text-indigo-600 font-semibold" if current_page?(action_plan_path)}" %>
+            <%= link_to "Subscriptions", subscriptions_path, class: "text-gray-600 hover:text-gray-900 #{"text-indigo-600 font-semibold" if current_page?(subscriptions_path)}" %>
+            <%= link_to "Sign out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-gray-500 hover:text-gray-700" %>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <main class="container mx-auto mt-20 px-5 py-8">
       <%= yield %>
     </main>
   </body>

@@ -1,0 +1,69 @@
+<% content_for :title, "Subscriptions" %>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-end justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Subscriptions &amp; Recurring Charges</h1>
+      <p class="text-sm text-gray-500 mt-1">Auto-detected from your transactions</p>
+    </div>
+    <% if @recurring_charges.any? %>
+      <div class="text-right">
+        <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">Est. Monthly Cost</p>
+        <p class="text-2xl font-bold text-gray-900">$<%= number_with_delimiter(@monthly_total) %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Charges Table -->
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <% if @recurring_charges.empty? %>
+      <div class="p-8 text-center">
+        <p class="text-sm text-gray-400">No recurring charges detected yet.</p>
+        <p class="text-xs text-gray-300 mt-1">Sync your transactions and run the Financial Analysis Job to detect subscriptions.</p>
+      </div>
+    <% else %>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="text-left px-6 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Merchant</th>
+            <th class="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Amount</th>
+            <th class="text-center px-6 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Cadence</th>
+            <th class="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Monthly Cost</th>
+            <th class="text-right px-6 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Last Charged</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <% @recurring_charges.each do |charge| %>
+            <% monthly_equiv = case charge.cadence
+                               when "weekly" then (charge.amount * 4).round(2)
+                               when "annual" then (charge.amount / 12.0).round(2)
+                               else charge.amount.round(2)
+                               end %>
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 font-medium text-gray-900"><%= charge.merchant_name %></td>
+              <td class="px-6 py-4 text-right text-gray-700">$<%= number_with_delimiter(charge.amount) %></td>
+              <td class="px-6 py-4 text-center">
+                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium
+                  <%= charge.cadence == "monthly" ? "bg-blue-50 text-blue-700" :
+                      charge.cadence == "annual"  ? "bg-purple-50 text-purple-700" :
+                                                    "bg-gray-100 text-gray-600" %>">
+                  <%= charge.cadence.capitalize %>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right text-gray-700">$<%= number_with_delimiter(monthly_equiv) %></td>
+              <td class="px-6 py-4 text-right text-gray-400"><%= charge.last_charged_on.strftime("%b %-d, %Y") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr class="bg-gray-50 border-t border-gray-200">
+            <td colspan="3" class="px-6 py-3 text-sm font-semibold text-gray-700">Total</td>
+            <td class="px-6 py-3 text-right text-sm font-bold text-gray-900">$<%= number_with_delimiter(@monthly_total) %></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    <% end %>
+  </div>
+</div>

@@ -15,5 +15,8 @@ Rails.application.routes.draw do
     post "exchange_public_token", to: "plaid#exchange_public_token"
   end
 
+  get "action_plan", to: "action_plan#index"
+  get "subscriptions", to: "subscriptions#index"
+
   root "dashboard#index"
 end

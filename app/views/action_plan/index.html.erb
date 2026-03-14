@@ -1,0 +1,64 @@
+<% content_for :title, "Action Plan" %>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-end justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Action Plan</h1>
+      <p class="text-sm text-gray-500 mt-1"><%= @date.strftime("%B %Y") %></p>
+    </div>
+    <% if @total_savings > 0 %>
+      <div class="text-right">
+        <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">Potential Monthly Savings</p>
+        <p class="text-2xl font-bold text-green-600">$<%= number_with_delimiter(@total_savings.round(2)) %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Savings Opportunities -->
+  <div class="bg-white rounded-xl border border-gray-200 p-6">
+    <h2 class="text-base font-semibold text-gray-900 mb-4">Savings Opportunities</h2>
+    <% if @opportunities.empty? %>
+      <p class="text-sm text-gray-400">No spending data available yet.</p>
+    <% else %>
+      <div class="space-y-4">
+        <% @opportunities.each_with_index do |opp, i| %>
+          <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+            <div class="flex items-center gap-4">
+              <span class="flex-shrink-0 w-7 h-7 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center"><%= i + 1 %></span>
+              <div>
+                <p class="text-sm font-medium text-gray-900"><%= opp[:category].gsub("_", " ").titleize %></p>
+                <p class="text-xs text-gray-500">Current spend: $<%= number_with_delimiter(opp[:current_spend]) %> &middot; Reduce by <%= opp[:reduction_percentage] %>%</p>
+              </div>
+            </div>
+            <span class="text-sm font-semibold text-green-600">Save $<%= number_with_delimiter(opp[:estimated_savings]) %></span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Claude Recommendations -->
+  <% if @recommendations.any? %>
+    <div class="space-y-4">
+      <h2 class="text-base font-semibold text-gray-900">AI Recommendations</h2>
+      <% @recommendations.each do |rec| %>
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+              <%= rec.month.strftime("%B %Y") %>
+            </span>
+            <span class="text-xs text-gray-400"><%= rec.generated_at.strftime("%b %-d, %Y at %-I:%M %p") %></span>
+          </div>
+          <div class="text-sm text-gray-700 prose prose-sm max-w-none">
+            <%= simple_format(rec.content) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
+      <p class="text-sm text-gray-400">No recommendations generated yet. Run the Recommendation Generation Job to get personalized advice.</p>
+    </div>
+  <% end %>
+</div>
