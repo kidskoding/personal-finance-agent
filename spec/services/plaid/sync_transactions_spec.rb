@@ -32,8 +32,8 @@ RSpec.describe Plaid::SyncTransactions do
 
   let(:sync_response) do
     double("sync_response",
-      accounts: [account_double],
-      added: [txn_double],
+      accounts: [ account_double ],
+      added: [ txn_double ],
       modified: [],
       removed: [],
       next_cursor: "cursor-abc",
@@ -105,7 +105,7 @@ RSpec.describe Plaid::SyncTransactions do
         existing_txn
         allow(modified_txn).to receive(:respond_to?).with(:personal_finance_category).and_return(true)
         allow(sync_response).to receive(:added).and_return([])
-        allow(sync_response).to receive(:modified).and_return([modified_txn])
+        allow(sync_response).to receive(:modified).and_return([ modified_txn ])
       end
 
       it "updates the existing transaction" do
@@ -122,7 +122,7 @@ RSpec.describe Plaid::SyncTransactions do
 
       before do
         allow(sync_response).to receive(:added).and_return([])
-        allow(sync_response).to receive(:removed).and_return([removed_double])
+        allow(sync_response).to receive(:removed).and_return([ removed_double ])
       end
 
       it "destroys removed transactions" do
