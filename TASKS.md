@@ -141,11 +141,7 @@ Fields:
 
 Install Plaid Ruby SDK.
 
-Create:
-
-
-app/services/integrations/plaid_client.rb
-
+Create: app/services/integrations/plaid_client.rb
 
 This service should initialize the Plaid client using environment variables.
 
@@ -153,11 +149,7 @@ This service should initialize the Plaid client using environment variables.
 
 ## Task 3.2 — Plaid Link Token Endpoint
 
-Create a controller endpoint:
-
-
-POST /plaid/link_token
-
+Create a controller endpoint: POST /plaid/link_token
 
 This endpoint should create a Plaid link token.
 
@@ -165,11 +157,7 @@ This endpoint should create a Plaid link token.
 
 ## Task 3.3 — Public Token Exchange
 
-Create a controller endpoint:
-
-
-POST /plaid/exchange_public_token
-
+Create a controller endpoint: POST /plaid/exchange_public_token
 
 Responsibilities:
 
@@ -182,11 +170,7 @@ Responsibilities:
 
 ## Task 3.4 — Transaction Sync Service
 
-Create service:
-
-
-Plaid::SyncTransactions
-
+Create service: Plaid::SyncTransactions
 
 Responsibilities:
 
@@ -203,11 +187,7 @@ Create deterministic analytics services.
 
 ## Task 4.1 — Category Breakdown
 
-Service:
-
-
-Analysis::CategoryBreakdown
-
+Service: Analysis::CategoryBreakdown
 
 Responsibilities:
 
@@ -218,11 +198,7 @@ Responsibilities:
 
 ## Task 4.2 — Merchant Breakdown
 
-Service:
-
-
-Analysis::MerchantBreakdown
-
+Service: Analysis::MerchantBreakdown
 
 Responsibilities:
 
@@ -233,11 +209,7 @@ Responsibilities:
 
 ## Task 4.3 — Recurring Charge Detection
 
-Service:
-
-
-Analysis::RecurringChargeDetector
-
+Service: Analysis::RecurringChargeDetector
 
 Responsibilities:
 
@@ -249,11 +221,7 @@ Responsibilities:
 
 ## Task 4.4 — Spending Spike Detection
 
-Service:
-
-
-Analysis::SpendingSpikeDetector
-
+Service: Analysis::SpendingSpikeDetector
 
 Responsibilities:
 
@@ -266,11 +234,7 @@ Responsibilities:
 
 ## Task 5.1 — Savings Opportunity Estimator
 
-Service:
-
-
-Planning::SavingsOpportunityEstimator
-
+Service: Planning::SavingsOpportunityEstimator
 
 Responsibilities:
 
@@ -281,11 +245,7 @@ Responsibilities:
 
 ## Task 5.2 — Claude Recommendation Generator
 
-Service:
-
-
-Planning::RecommendationGenerator
-
+Service: Planning::RecommendationGenerator
 
 Responsibilities:
 
@@ -299,11 +259,7 @@ Responsibilities:
 
 ## Task 6.1 — Weekly Digest
 
-Service:
-
-
-Reporting::WeeklyDigestGenerator
-
+Service: Reporting::WeeklyDigestGenerator
 
 Responsibilities:
 
@@ -315,11 +271,7 @@ Responsibilities:
 
 ## Task 6.2 — Monthly Review
 
-Service:
-
-
-Reporting::MonthlyReviewGenerator
-
+Service: Reporting::MonthlyReviewGenerator
 
 Responsibilities:
 
