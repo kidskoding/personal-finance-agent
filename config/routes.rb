@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   scope :plaid do
     post "link_token", to: "plaid#create_link_token"
+    post "exchange_public_token", to: "plaid#exchange_public_token"
   end
 
   root "dashboard#index"

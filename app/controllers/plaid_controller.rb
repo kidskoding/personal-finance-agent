@@ -9,6 +9,19 @@ class PlaidController < ApplicationController
     render json: { error: "Unable to create link token" }, status: :service_unavailable
   end
 
+  def exchange_public_token
+    plaid_item = Plaid::ExchangePublicToken.new(
+      user: current_user,
+      public_token: params.require(:public_token)
+    ).call
+    render json: { plaid_item_id: plaid_item.plaid_item_id }, status: :created
+  rescue ActionController::ParameterMissing => e
+    render json: { error: e.message }, status: :bad_request
+  rescue Plaid::ApiError => e
+    Rails.logger.error("Plaid token exchange error: #{e.message}")
+    render json: { error: "Unable to exchange token" }, status: :service_unavailable
+  end
+
   private
 
   def plaid_client
