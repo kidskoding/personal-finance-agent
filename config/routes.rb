@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     post "exchange_public_token", to: "plaid#exchange_public_token"
   end
 
-  get  "settings", to: "settings#index"
+  get "settings", to: "settings#index"
   delete "settings/banks/:id", to: "settings#disconnect_bank", as: :disconnect_bank
   delete "settings/recommendations", to: "settings#clear_recommendations", as: :clear_recommendations
 
