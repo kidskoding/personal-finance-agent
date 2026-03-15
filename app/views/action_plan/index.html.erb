@@ -7,9 +7,11 @@
       <h1 class="text-2xl font-bold text-gray-900">Action Plan</h1>
       <p class="text-sm text-gray-500 mt-1"><%= @date.strftime("%B %Y") %></p>
     </div>
-    <%= button_to "Generate recommendations", generate_action_plan_path,
-        method: :post,
-        class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition" %>
+    <% if @recommendations.empty? %>
+      <%= button_to "Generate recommendations", generate_action_plan_path,
+          method: :post,
+          class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition" %>
+    <% end %>
     <% if @total_savings > 0 %>
       <div class="text-right">
         <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">Potential Monthly Savings</p>
