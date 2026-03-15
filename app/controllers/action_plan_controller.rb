@@ -8,6 +8,8 @@ class ActionPlanController < ApplicationController
     @total_savings             = @opportunities.sum { |o| o[:estimated_savings] }
     @recommendation_this_month = current_user.recommendations.find_by(month: @date)
     @past_recommendations      = current_user.recommendations.where.not(month: @date).order(month: :desc).limit(5)
+    earliest = current_user.transactions.minimum(:posted_date)
+    @earliest_month = earliest&.beginning_of_month
   end
 
   def generate
