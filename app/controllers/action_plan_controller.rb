@@ -2,7 +2,7 @@ class ActionPlanController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @date                      = parse_month_param
+    @date                      = current_month
     @has_accounts              = current_user.plaid_items.exists?
     @opportunities             = Planning::SavingsOpportunityEstimator.new(user: current_user, date: @date).call
     @total_savings             = @opportunities.sum { |o| o[:estimated_savings] }
@@ -18,7 +18,7 @@ class ActionPlanController < ApplicationController
       return
     end
 
-    date = parse_month_param
+    date = current_month
     if current_user.recommendations.exists?(month: date)
       redirect_to action_plan_path(month: date.strftime("%Y-%m")), notice: "A recommendation for #{date.strftime("%B %Y")} already exists."
       return
@@ -29,10 +29,4 @@ class ActionPlanController < ApplicationController
   end
 
   private
-
-  def parse_month_param
-    Date.strptime(params[:month], "%Y-%m").beginning_of_month
-  rescue ArgumentError, TypeError
-    Date.current.beginning_of_month
-  end
 end

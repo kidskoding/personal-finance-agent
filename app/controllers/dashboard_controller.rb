@@ -2,7 +2,7 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @date = parse_month_param
+    @date = current_month
     @has_accounts = current_user.accounts.exists?
     @categories   = Analysis::CategoryBreakdown.new(user: current_user, date: @date).call
     @merchants    = Analysis::MerchantBreakdown.new(user: current_user, date: @date).call.first(5)
@@ -11,13 +11,5 @@ class DashboardController < ApplicationController
     @recommendation = current_user.recommendations.find_by(month: @date)
     earliest = current_user.transactions.minimum(:posted_date)
     @earliest_month = earliest&.beginning_of_month
-  end
-
-  private
-
-  def parse_month_param
-    Date.strptime(params[:month], "%Y-%m").beginning_of_month
-  rescue ArgumentError, TypeError
-    Date.current.beginning_of_month
   end
 end
