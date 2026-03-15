@@ -24,6 +24,7 @@ module Plaid
       end
 
       @plaid_item.update!(last_sync_cursor: cursor, last_synced_at: Time.current)
+      Plaid::SyncRecurringTransactions.new(@plaid_item).call
     end
 
     private

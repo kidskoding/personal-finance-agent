@@ -6,7 +6,6 @@ class FinancialAnalysisJob < ApplicationJob
     user = User.find(user_id)
     date = date_str ? Date.parse(date_str) : Date.today
 
-    Analysis::RecurringChargeDetector.new(user: user).call
     Analysis::CategoryBreakdown.new(user: user, date: date).call
     Analysis::MerchantBreakdown.new(user: user, date: date).call
     Analysis::SpendingSpikeDetector.new(user: user, date: date).call

@@ -35,6 +35,11 @@ module Integrations
       @client.transactions_sync(request)
     end
 
+    def recurring_transactions(access_token:)
+      request = Plaid::TransactionsRecurringGetRequest.new(access_token: access_token)
+      @client.transactions_recurring_get(request)
+    end
+
     def get_accounts(access_token:)
       request = Plaid::AccountsGetRequest.new(access_token: access_token)
       @client.accounts_get(request)

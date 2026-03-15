@@ -21,8 +21,7 @@ Rails.application.routes.draw do
 
   get "action_plan", to: "action_plan#index"
   post "action_plan/generate", to: "action_plan#generate", as: :generate_action_plan
-  get  "subscriptions", to: "subscriptions#index"
-  post "subscriptions/analyze", to: "subscriptions#analyze", as: :analyze_subscriptions
+  get "subscriptions", to: "subscriptions#index"
 
   root "dashboard#index"
 end
