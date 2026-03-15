@@ -16,6 +16,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
   </head>
@@ -35,8 +36,12 @@
       </nav>
     <% end %>
 
-    <main class="container mx-auto mt-20 px-5 py-8">
+    <% if user_signed_in? %>
+      <main class="container mx-auto mt-20 px-5 py-8">
+        <%= yield %>
+      </main>
+    <% else %>
       <%= yield %>
-    </main>
+    <% end %>
   </body>
 </html>
