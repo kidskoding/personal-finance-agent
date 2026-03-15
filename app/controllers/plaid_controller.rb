@@ -12,7 +12,8 @@ class PlaidController < ApplicationController
   def exchange_public_token
     plaid_item = Plaid::ExchangePublicToken.new(
       user: current_user,
-      public_token: params.require(:public_token)
+      public_token: params.require(:public_token),
+      institution_name: params[:institution_name]
     ).call
     render json: { plaid_item_id: plaid_item.plaid_item_id }, status: :created
   rescue ActionController::ParameterMissing => e

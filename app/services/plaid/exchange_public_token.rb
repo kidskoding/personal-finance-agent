@@ -1,8 +1,9 @@
 module Plaid
   class ExchangePublicToken
-    def initialize(user:, public_token:)
+    def initialize(user:, public_token:, institution_name: nil)
       @user = user
       @public_token = public_token
+      @institution_name = institution_name
     end
 
     def call
@@ -12,7 +13,8 @@ module Plaid
       new_record = plaid_item.new_record?
       plaid_item.assign_attributes(
         user: @user,
-        access_token_encrypted: TokenEncryptor.encrypt(response.access_token)
+        access_token_encrypted: TokenEncryptor.encrypt(response.access_token),
+        institution_name: @institution_name
       )
       plaid_item.save!
 

@@ -14,7 +14,7 @@ export default class extends Controller {
       const token = await this.fetchLinkToken()
       const handler = window.Plaid.create({
         token,
-        onSuccess: (publicToken, _metadata) => this.onSuccess(publicToken),
+        onSuccess: (publicToken, metadata) => this.onSuccess(publicToken, metadata),
         onExit: (_err, _metadata) => this.onExit()
       })
       this.element.disabled = false
@@ -43,7 +43,7 @@ export default class extends Controller {
     return data.link_token
   }
 
-  async onSuccess(publicToken) {
+  async onSuccess(publicToken, metadata) {
     this.element.disabled = true
     this.element.textContent = "Connecting…"
 
@@ -53,7 +53,10 @@ export default class extends Controller {
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
       },
-      body: JSON.stringify({ public_token: publicToken })
+      body: JSON.stringify({
+        public_token: publicToken,
+        institution_name: metadata?.institution?.name
+      })
     })
 
     if (resp.ok) {
