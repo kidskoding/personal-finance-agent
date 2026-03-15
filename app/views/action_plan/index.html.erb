@@ -55,8 +55,8 @@
             </span>
             <span class="text-xs text-gray-400"><%= rec.generated_at.strftime("%b %-d, %Y at %-I:%M %p") %></span>
           </div>
-          <div class="text-sm text-gray-700 prose prose-sm max-w-none">
-            <%= simple_format(rec.content) %>
+          <div class="text-sm text-gray-700 markdown">
+            <%= render_markdown(rec.content) %>
           </div>
         </div>
       <% end %>

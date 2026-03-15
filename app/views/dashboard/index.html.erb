@@ -111,8 +111,8 @@
         <h2 class="text-base font-semibold text-indigo-900">Latest Recommendation</h2>
         <span class="text-xs text-indigo-400"><%= @recommendation.generated_at.strftime("%b %-d, %Y") %></span>
       </div>
-      <div class="text-sm text-indigo-800 prose prose-sm max-w-none">
-        <%= simple_format(@recommendation.content.truncate(600)) %>
+      <div class="text-sm text-indigo-800 markdown">
+        <%= render_markdown(@recommendation.content.truncate(600)) %>
       </div>
       <%= link_to "View full action plan →", action_plan_path, class: "inline-block mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
     </div>
