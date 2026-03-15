@@ -6,7 +6,30 @@
   <div class="flex items-start justify-between">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">Action Plan</h1>
-      <p class="text-sm text-gray-500 mt-0.5"><%= @date.strftime("%B %Y") %></p>
+      <!-- Month navigation -->
+      <div class="flex items-center gap-2 mt-1">
+        <%= link_to action_plan_path(month: (@date - 1.month).strftime("%Y-%m")),
+            class: "p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" do %>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+        <% end %>
+        <span class="text-sm font-medium text-gray-700 w-28 text-center"><%= @date.strftime("%B %Y") %></span>
+        <% if @date < Date.current.beginning_of_month %>
+          <%= link_to action_plan_path(month: (@date + 1.month).strftime("%Y-%m")),
+              class: "p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors" do %>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          <% end %>
+        <% else %>
+          <span class="p-1 text-gray-200">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </span>
+        <% end %>
+      </div>
     </div>
     <div class="flex items-center gap-4">
       <% if @total_savings > 0 %>
@@ -61,7 +84,7 @@
       <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">AI Recommendations</h2>
       <% unless @recommendation_this_month %>
         <% if @has_accounts %>
-          <%= button_to generate_action_plan_path, method: :post,
+          <%= button_to generate_action_plan_path(month: @date.strftime("%Y-%m")), method: :post,
               class: "inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors" do %>
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
@@ -72,30 +95,28 @@
       <% end %>
     </div>
 
-    <% if @recommendations.any? %>
-      <% @recommendations.each do |rec| %>
-        <div class="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white rounded-2xl border border-indigo-100 shadow-sm p-6">
-          <div class="absolute right-0 top-0 w-32 h-32 rounded-full bg-indigo-100/30 -mr-8 -mt-8"></div>
-          <div class="relative">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-md bg-indigo-600 flex items-center justify-center">
-                  <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-                  </svg>
-                </div>
-                <span class="text-xs font-semibold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">
-                  <%= rec.month.strftime("%B %Y") %>
-                </span>
+    <% if @recommendation_this_month %>
+      <div class="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white rounded-2xl border border-indigo-100 shadow-sm p-6">
+        <div class="absolute right-0 top-0 w-32 h-32 rounded-full bg-indigo-100/30 -mr-8 -mt-8"></div>
+        <div class="relative">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-indigo-600 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                </svg>
               </div>
-              <span class="text-xs text-gray-400"><%= rec.generated_at.strftime("%b %-d, %Y at %-I:%M %p") %></span>
+              <span class="text-xs font-semibold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">
+                <%= @recommendation_this_month.month.strftime("%B %Y") %>
+              </span>
             </div>
-            <div class="text-sm text-gray-700 markdown">
-              <%= render_markdown(rec.content) %>
-            </div>
+            <span class="text-xs text-gray-400"><%= @recommendation_this_month.generated_at.strftime("%b %-d, %Y at %-I:%M %p") %></span>
+          </div>
+          <div class="text-sm text-gray-700 markdown">
+            <%= render_markdown(@recommendation_this_month.content) %>
           </div>
         </div>
-      <% end %>
+      </div>
     <% else %>
       <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
         <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
@@ -103,7 +124,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
           </svg>
         </div>
-        <p class="text-base font-semibold text-gray-800">No recommendations yet</p>
+        <p class="text-base font-semibold text-gray-800">No recommendation for <%= @date.strftime("%B %Y") %></p>
         <% unless @has_accounts %>
           <p class="text-sm text-gray-400 mt-1 mb-6 max-w-sm mx-auto">Connect a bank account first to generate personalized recommendations.</p>
           <%= link_to settings_path, class: "inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors" do %>
@@ -112,6 +133,30 @@
         <% else %>
           <p class="text-sm text-gray-400 mt-1 max-w-sm mx-auto">Use the "Generate for <%= @date.strftime("%B") %>" button above to get personalized AI advice.</p>
         <% end %>
+      </div>
+    <% end %>
+
+    <% if @past_recommendations.any? %>
+      <div class="mt-6">
+        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Previous Months</h3>
+        <div class="space-y-3">
+          <% @past_recommendations.each do |rec| %>
+            <%= link_to action_plan_path(month: rec.month.strftime("%Y-%m")),
+                class: "flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-indigo-200 hover:bg-indigo-50/30 transition-colors group" do %>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
+                  <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                  </svg>
+                </div>
+                <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-700 transition-colors"><%= rec.month.strftime("%B %Y") %></span>
+              </div>
+              <svg class="w-4 h-4 text-gray-300 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            <% end %>
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>
