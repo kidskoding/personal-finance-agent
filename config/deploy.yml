@@ -27,10 +27,9 @@ env:
     DB_HOST: personal_finance_agent-db
     RAILS_LOG_LEVEL: info
 
-# Build remotely on the Droplet (amd64 native — avoids cross-compilation on arm64 Mac).
+# Build locally in CI (ubuntu-latest is amd64, no cross-compilation needed).
 builder:
   arch: amd64
-  remote: ssh://root@159.203.118.84
 
 # Persistent storage for Active Storage uploads.
 volumes:
