@@ -27,9 +27,10 @@ env:
     DB_HOST: personal_finance_agent-db
     RAILS_LOG_LEVEL: info
 
-# Build locally in CI (ubuntu-latest is amd64, no cross-compilation needed).
+# Build locally in CI using docker driver so registry credentials are inherited.
 builder:
   arch: amd64
+  driver: docker
 
 # Persistent storage for Active Storage uploads.
 volumes:
