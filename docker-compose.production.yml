@@ -1,6 +1,6 @@
 services:
   web:
-    image: registry.digitalocean.com/personal-finance-agent/personal_finance_agent:latest
+    build: .
     ports:
       - "80:80"
     depends_on:

@@ -12,44 +12,22 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Log in to DigitalOcean Container Registry
-        run: echo "${{ secrets.DO_REGISTRY_PASSWORD }}" | docker login registry.digitalocean.com -u "${{ secrets.DO_REGISTRY_USERNAME }}" --password-stdin
-
-      - name: Build and push Docker image
-        run: |
-          docker build -t registry.digitalocean.com/personal-finance-agent/personal_finance_agent:latest .
-          docker push registry.digitalocean.com/personal-finance-agent/personal_finance_agent:latest
-
-      - name: Write .env to droplet
+      - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.DROPLET_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p /root/app
-            cat > /root/app/.env <<'EOF'
+            set -e
+            cd /root/app
+            git fetch origin master
+            git reset --hard origin/master
+
+            cat > .env <<EOF
             RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}
             PERSONAL_FINANCE_AGENT_DATABASE_PASSWORD=${{ secrets.PERSONAL_FINANCE_AGENT_DATABASE_PASSWORD }}
             EOF
 
-      - name: Deploy to droplet
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ vars.DROPLET_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /root/app
-            echo "${{ secrets.DO_REGISTRY_PASSWORD }}" | docker login registry.digitalocean.com -u "${{ secrets.DO_REGISTRY_USERNAME }}" --password-stdin
-            docker compose -f docker-compose.production.yml pull
-            docker compose -f docker-compose.production.yml up -d
+            docker compose -f docker-compose.production.yml up -d --build
             docker image prune -f
