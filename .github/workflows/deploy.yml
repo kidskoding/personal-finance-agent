@@ -26,7 +26,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add Droplet to known hosts
-        run: ssh-keyscan -H ${{ vars.DROPLET_IP }} >> ~/.ssh/known_hosts
+        run: ssh-keyscan ${{ vars.DROPLET_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy with Kamal
         env:
