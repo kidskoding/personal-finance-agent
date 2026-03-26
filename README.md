@@ -1,6 +1,6 @@
 # Personal Finance Agent
 
-A **Ruby on Rails** web app that connects to your bank accounts via the **Plaid API**, automatically analyzes your spending, and generates actionable recommendations: all running in the background without you having to interact with a chatbot.
+A **Ruby on Rails** web app that connects to your bank accounts via the **Plaid API**, automatically analyzes your spending, and generates actionable recommendations — all running in the background without you having to interact with a chatbot.
 
 ---
 
@@ -46,54 +46,115 @@ A **Ruby on Rails** web app that connects to your bank accounts via the **Plaid 
 
 ---
 
-## Setup
+## Local Development
 
-### Requirements
+### Prerequisites
 
-- Ruby 3.x
-- PostgreSQL
-- Redis
-- Plaid API credentials
-- Anthropic API key
+- Ruby 3.3.x (`rbenv` or `asdf` recommended)
+- Docker + Docker Compose
+- A [Plaid](https://dashboard.plaid.com) account (sandbox is free)
+- An [Anthropic](https://console.anthropic.com) API key
 
-### Environment Variables
-
-```
-PLAID_CLIENT_ID=
-PLAID_SECRET=
-PLAID_ENV=sandbox
-ANTHROPIC_API_KEY=
-RAILS_MASTER_KEY=
-```
-
-### Running with Docker (recommended)
+### 1. Clone the repo
 
 ```bash
-# First time (or after gem changes)
-docker compose build
-
-# Start everything
-docker compose up
-
-# Stop
-docker compose down
-
-# Reset all data (nuke volumes)
-docker compose down -v
+git clone https://github.com/OpenAgents-Illinois/personal-finance-agent.git
+cd personal-finance-agent
 ```
 
-| Service | What it does |
-|---------|-------------|
-| `db` | Postgres 16 |
-| `redis` | Redis 7 (Sidekiq queue) |
-| `web` | Rails server on :3000, runs `db:prepare` on boot |
-| `worker` | Sidekiq |
-| `css` | Tailwind watcher (rebuilds on file changes) |
+### 2. Set up environment variables
 
-### Running Locally (without Docker)
+```bash
+cp .env.example .env
+```
+
+Fill in `.env`:
+
+```
+PLAID_CLIENT_ID=your_plaid_client_id
+PLAID_SECRET=your_plaid_secret
+PLAID_ENV=sandbox
+PLAID_APP_NAME="Personal Finance Agent"
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
+
+### 3. Start with Docker (recommended)
+
+```bash
+docker compose up
+```
+
+This starts:
+
+| Service | What it does |
+|---|---|
+| `db` | Postgres 16 on port 5432 |
+| `redis` | Redis 7 on port 6379 |
+| `web` | Rails server on http://localhost:3000 |
+| `worker` | Sidekiq background job processor |
+| `css` | Tailwind CSS watcher |
+
+The database is created and migrated automatically on first boot.
+
+### 4. Start without Docker
 
 ```bash
 bundle install
-rails db:create db:migrate
-bin/dev   # starts Rails + Sidekiq via Procfile.dev
+bin/rails db:prepare
+bin/dev
+```
+
+> Requires Postgres and Redis running locally.
+
+---
+
+## Running Tests
+
+```bash
+# All tests
+bundle exec rspec
+
+# Single file
+bundle exec rspec spec/models/user_spec.rb
+
+# With coverage
+COVERAGE=true bundle exec rspec
+```
+
+Make sure Postgres is running before running tests (`docker compose up -d db` if using Docker).
+
+---
+
+## Production Deployment
+
+The app deploys automatically to a DigitalOcean droplet via GitHub Actions on every push to `master`.
+
+### How it works
+
+1. CI runs (linting + security scans)
+2. On success, the deploy workflow SSHes into the droplet
+3. Pulls latest code with `git pull`
+4. Rebuilds and restarts with `docker compose up -d --build`
+
+### Required GitHub secrets
+
+| Secret | Description |
+|---|---|
+| `SSH_PRIVATE_KEY` | Private SSH key with access to the droplet |
+| `RAILS_MASTER_KEY` | Contents of `config/master.key` |
+| `PERSONAL_FINANCE_AGENT_DATABASE_PASSWORD` | Production Postgres password |
+
+### Required GitHub variables
+
+| Variable | Description |
+|---|---|
+| `DROPLET_IP` | IP address of the DigitalOcean droplet |
+
+### Manual deploy
+
+```bash
+ssh root@<droplet-ip>
+cd /root/app
+git pull origin master
+docker compose -f docker-compose.production.yml up -d --build
 ```
