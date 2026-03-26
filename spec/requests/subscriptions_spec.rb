@@ -21,7 +21,7 @@ RSpec.describe "Subscriptions", type: :request do
 
       it "shows empty state when no recurring charges exist" do
         get subscriptions_path
-        expect(response.body).to include("No recurring charges detected yet")
+        expect(response.body).to include("No recurring charges detected")
       end
 
       it "lists active recurring charges" do

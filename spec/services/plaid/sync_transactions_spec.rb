@@ -45,6 +45,9 @@ RSpec.describe Plaid::SyncTransactions do
     allow(Integrations::PlaidClient).to receive(:new).and_return(plaid_client_double)
     allow(Plaid::TokenEncryptor).to receive(:decrypt).and_return("access-sandbox-xyz")
     allow(plaid_client_double).to receive(:sync_transactions).and_return(sync_response)
+    allow(plaid_client_double).to receive(:recurring_transactions).and_return(
+      double("recurring_response", outflow_streams: [])
+    )
     allow(txn_double).to receive(:respond_to?).with(:personal_finance_category).and_return(true)
     allow(txn_double).to receive(:respond_to?).with(:accounts).and_return(true)
     allow(sync_response).to receive(:respond_to?).with(:accounts).and_return(true)
