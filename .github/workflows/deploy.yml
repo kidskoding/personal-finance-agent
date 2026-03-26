@@ -34,6 +34,7 @@ jobs:
 
       - name: Deploy with Kamal
         env:
+          KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           PERSONAL_FINANCE_AGENT_DATABASE_PASSWORD: ${{ secrets.PERSONAL_FINANCE_AGENT_DATABASE_PASSWORD }}
